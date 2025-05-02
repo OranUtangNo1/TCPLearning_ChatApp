@@ -1,17 +1,45 @@
-﻿using System;
+﻿using ChatAppClient.Model;
+using ChatAppClient.ViewModel;
+using ChatAppCore;
+using ChatAppCore.TcpService;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Security.Authentication.ExtendedProtection;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace ChatApp
+namespace ChatAppClient
 {
     /// <summary>
     /// App.xaml の相互作用ロジック
     /// </summary>
     public partial class App : Application
     {
+        public static IServiceProvider ServiceProvider { get; private set; }
+
+        protected override void OnStartup(StartupEventArgs e) 
+        {
+            base.OnStartup(e);
+
+            var serviceCollection = new ServiceCollection();
+            ConfigureServices(serviceCollection);
+
+            var provider = serviceCollection.BuildServiceProvider();
+            var mainWindow = provider.GetRequiredService<MainWindow>();
+            mainWindow.Show();
+        }
+
+        private void ConfigureServices(IServiceCollection services) 
+        {
+            services.AddSingleton<IConnectionService, TcpClientService>();
+            services.AddSingleton<IChatModel, ChatModel>();
+            services.AddSingleton<IVmlMainWindow, VmlMainWindow>();
+
+            services.AddSingleton<MainWindow>();
+        }
     }
 }
