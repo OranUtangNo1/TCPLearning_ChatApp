@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace ChatAppCore.FrameWork
 {
-    internal class RelayCommand :ICommand
+    public class RelayCommand :ICommand
     {
         private readonly Action _execute;
         private readonly Func<bool> _canExecute = null;

@@ -28,7 +28,7 @@
         </StackPanel>
 
         <!-- メッセージ一覧 -->
-        <ListBox Grid.Row="1" ItemsSource="{Binding Messages, UpdateSourceTrigger=PropertyChanged}" />
+        <ListBox Grid.Row="1" ItemsSource="{Binding Messages}" />
 
         <!-- メッセージ入力と送信 -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10,0,0">

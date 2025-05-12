@@ -78,11 +78,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FrameWork\RelayCommand.cs" />
-    <Compile Include="Model\ChatModel.cs" />
-    <Compile Include="Model\IChatModel.cs" />
     <Compile Include="ViewModel\IVmlMainWindow.cs" />
     <Compile Include="ViewModel\VmlMainWindow.cs" />
+    <Compile Include="ViewModel\base\ViewModelBase.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
