@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatAppClient.Model
+namespace ChatAppCore.ChatModel.Interface
 {
-    internal interface IChatModel
+    public interface IChatModels
     {
 
-        event Action<string> MessageRecieved;
+        event Action<Message> MessageRecieved;
+
+        event Action<bool> ConnectionStatusChanged;
 
 
         Task ConnectAsync(string ip, int port);
