@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media.Media3D;
+using ChatAppClient.Models;
 using ChatAppCore;
-using ChatAppCore.ChatModel.Interface;
 using ChatAppCore.FrameWork;
 
 namespace ChatAppClient.ViewModel
 {
+    /// <summary>
+    /// クライアント用チャット画面ViewModel
+    /// </summary>
     internal class VmlMainWindow : ViewModelBase,IVmlMainWindow
     {
 
@@ -39,7 +39,7 @@ namespace ChatAppClient.ViewModel
         private ObservableCollection<string> _messages = new ObservableCollection<string>();
 
         /// <summary>chat Func</summary>
-        private IChatModels chatModel = null;
+        private IClientChatModels chatModel = null;
 
         #endregion
 
@@ -97,17 +97,15 @@ namespace ChatAppClient.ViewModel
 
         #region Constractor
 
-        public VmlMainWindow(IChatModels chatModel)
+        public VmlMainWindow(IClientChatModels chatModel)
         {
             // ======= 初期値設定  =====================
             this.InitialSetting();
-
 
             // ======= コマンド登録  =====================
             this.ConnectCommand = new RelayCommand(Connect);
             this.DisConnectCommand = new RelayCommand(DisConnect);
             this.SendCommand = new RelayCommand(Send);
-
 
             // ======= インスタンス登録  =====================
             this.chatModel = chatModel;
@@ -123,20 +121,20 @@ namespace ChatAppClient.ViewModel
 
         #endregion
 
-        #region Method
-
-        private void InitialSetting() 
-        {
-            // -----初期値設定------
-            this.TargetIP = "127.0.0.1";
-            this.TargetPort = "5000";
-            this.ConnectionStatus = StatusDisConnect;
-        }
+        #region Comand Method
 
         /// <summary>Connect</summary>
         private void Connect()
         {
-            this.chatModel.ConnectAsync(this.TargetIP,int.Parse(this.TargetPort));
+            try 
+            {
+                // 接続
+                this.chatModel.ConnectAsync(this.TargetIP, int.Parse(this.TargetPort));
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         /// <summary>DisConnect</summary>
@@ -148,26 +146,91 @@ namespace ChatAppClient.ViewModel
         /// <summary>Send</summary>
         private void Send()
         {
-            this.chatModel.SendMessageAsync(this.InputText);
-            this.InputText = string.Empty;
+            try 
+            {
+                this.chatModel.SendMessageAsync(this.InputText);
+                this.AddMessageToList($"{DateTime.Now} : 送-->  {this.InputText}");
+
+                this.InputText = string.Empty;
+            }
+            catch (ArgumentException ex) 
+            {
+            }
+            catch(InvalidOperationException ex) 
+            {
+            }
+            catch(Exception ex) 
+            {
+            }
+        }
+        #endregion
+
+        #region Method
+
+        /// <summary>
+        /// 初期値設定
+        /// </summary>
+        private void InitialSetting()
+        {
+            // -----初期値設定------
+            this.TargetIP = "127.0.0.1";
+            this.TargetPort = "5000";
+            this.ConnectionStatus = StatusDisConnect;
         }
 
+        /// <summary>
+        /// メッセージ追加処理
+        /// </summary>
+        /// <param name="message">追加メッセージ</param>
+        private void AddMessageToList(string message)
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                this.Messages.Add(message);
+            });
+        }
         #endregion
 
         #region Event Handler
 
+        /// <summary>
+        /// メッセージ受信時処理
+        /// </summary>
+        /// <param name="msg">受信メッセージ</param>
         private void OnMessageRecieved(Message msg) 
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                var dispMessage = $"{msg.Timestamp}  --> 受 ( {msg.SenderIP} )   {msg.Content}";
+                var dispMessage = $"{msg.Timestamp} : -->受  {msg.Content}";
                 this.Messages.Add(dispMessage);
             });
         }
 
+        /// <summary>
+        /// 接続状態変更時処理
+        /// </summary>
+        /// <param name="status">変更後状態</param>
         private void OnConnectionStatusChanged(bool status) 
         {
             this.ConnectionStatus = status ? StatusConnect : StatusDisConnect;
+
+            this.MessageAddOnStateChanged(status);
+        }
+
+        /// <summary>
+        /// 接続状態変更時のメッセージ追加処理
+        /// </summary>
+        /// <param name="newStatus">変更後状態</param>
+        private void MessageAddOnStateChanged(bool newStatus)
+        {
+            if (newStatus)
+            {
+                this.AddMessageToList($"{DateTime.Now} : 接続完了");
+            }
+            else
+            {
+                this.AddMessageToList($"{DateTime.Now} : 切断されました");
+            }
         }
 
         #endregion

@@ -8,13 +8,16 @@ using System.Threading.Tasks;
 
 namespace ChatAppClient
 {
+    /// <summary>
+    /// ViewModel基底クラス
+    /// </summary>
     public class ViewModelBase: INotifyPropertyChanged
     {
         #region  Event Handler
-        /// <summary></summary>
+        /// <summary>PropertyChanged</summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-        /// <summary></summary>
+        /// <summary>SetProperty</summary>
         public void SetProperty<T>(ref T field, T val, [CallerMemberName] string propertyName = null)
         {
             if (!Equals(field, val))

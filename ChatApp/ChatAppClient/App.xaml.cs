@@ -1,8 +1,7 @@
 ﻿using ChatAppClient;
+using ChatAppClient.Models;
 using ChatAppClient.ViewModel;
 using ChatAppCore;
-using ChatAppCore.ChatModel.Interface;
-using ChatAppCore.TcpService;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Windows;
@@ -30,10 +29,17 @@ namespace ChatAppClient
 
         private void ConfigureServices(IServiceCollection services) 
         {
-            services.AddSingleton<ITcpClientService, TcpClientService>();
-            services.AddSingleton<IChatModels, ChatModels>();
+            // SubSystems
+            services.RegisterChatServices();
+
+            // Models
+            services.AddSingleton<IMessageManager, MessageManager>();
+            services.AddSingleton<IClientChatModels, ClientChatModels>();
+
+            // ViewModels
             services.AddSingleton<IVmlMainWindow, VmlMainWindow>();
 
+            // Views
             services.AddSingleton<MainWindow>();
         }
     }

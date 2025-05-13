@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ChatAppCore.TcpService
+namespace ChatAppCore
 {
     public class TcpClientService : ITcpClientService
     {
