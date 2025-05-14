@@ -128,7 +128,7 @@ namespace ChatAppClient.Models
         /// メッセージ受信時の処理
         /// </summary>
         /// <param name="newMessage">受信したメッセージ</param>
-        public void OnMessageRecived(Message newMessage)
+        private void OnMessageRecived(Message newMessage)
         {
             if (newMessage == null)
             {

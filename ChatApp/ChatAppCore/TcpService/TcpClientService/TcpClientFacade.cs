@@ -42,7 +42,7 @@ namespace ChatAppCore
 
             _connectionManager = new ConnectionManager(settings);
             _messageTransceiver = new MessageTransceiver(_connectionManager, settings);
-            _messageParser = new MessageParser(settings, _connectionManager);
+            _messageParser = new MessageParser(settings);
 
             // イベントの接続
             _connectionManager.ConnectionStatusChanged += OnConnectionStatusChanged;
@@ -114,8 +114,9 @@ namespace ChatAppCore
         /// メッセージ受信時の処理
         /// </summary>
         /// <param name="message">受信したメッセージ</param>
-        private void OnMessageReceived(Message message)
+        private void OnMessageReceived(string rowMessage)
         {
+            var message = new Message(rowMessage, this.ConnectionIP, this.ConnectionPort, DateTime.Now) { };
             MessageRecived?.Invoke(message);
         }
 

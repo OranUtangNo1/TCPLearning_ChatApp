@@ -36,6 +36,11 @@ namespace ChatAppCore
         public CancellationToken CancellationToken => _cts?.Token ?? CancellationToken.None;
 
         /// <summary>
+        /// steram
+        /// </summary>
+        public NetworkStream NetworkStream { get; private set; }
+
+        /// <summary>
         /// 接続状態が変更された時に発生するイベント
         /// </summary>
         public event Action<bool, string> ConnectionStatusChanged;
@@ -112,6 +117,9 @@ namespace ChatAppCore
                     ConnectionPort = port;
                 }
 
+                // Stream更新
+                this.NetworkStream = _client.GetStream();
+
                 // 接続成功イベントを発火
                 ConnectionStatusChanged?.Invoke(true, "Connected successfully");
                 return true;
@@ -186,6 +194,14 @@ namespace ChatAppCore
                     }
                     _client.Close();
                     _client = null;
+                }
+
+                // streamを閉じる
+                if (NetworkStream != null)
+                {
+                    NetworkStream.Close();
+                    NetworkStream.Dispose();
+                    NetworkStream = null;
                 }
 
                 // 接続情報のリセット

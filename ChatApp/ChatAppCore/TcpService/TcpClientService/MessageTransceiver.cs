@@ -12,7 +12,7 @@ namespace ChatAppCore
     {
         private readonly IConnectionManager _connectionManager;
         private readonly TcpClientSettings _settings;
-        private NetworkStream _stream;
+        private NetworkStream _stream => _connectionManager.NetworkStream;
 
         /// <summary>
         /// メッセージを受信した時に発生するイベント
@@ -28,33 +28,6 @@ namespace ChatAppCore
         {
             _connectionManager = connectionManager ?? throw new ArgumentNullException(nameof(connectionManager));
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
-
-            // 接続状態の変更を監視
-            _connectionManager.ConnectionStatusChanged += OnConnectionStatusChanged;
-        }
-
-        /// <summary>
-        /// 接続状態が変更された時の処理
-        /// </summary>
-        /// <param name="isConnected">接続状態</param>
-        /// <param name="message">ステータスメッセージ</param>
-        private void OnConnectionStatusChanged(bool isConnected, string message)
-        {
-            if (isConnected)
-            {
-                try
-                {
-                    _stream = _connectionManager.GetStream();
-                }
-                catch (Exception)
-                {
-                    // GetStreamに失敗した場合は何もしない
-                }
-            }
-            else
-            {
-                _stream = null;
-            }
         }
 
         /// <summary>
@@ -155,8 +128,6 @@ namespace ChatAppCore
         /// </summary>
         public void Dispose()
         {
-            _connectionManager.ConnectionStatusChanged -= OnConnectionStatusChanged;
-            _stream = null;
         }
     }
 }

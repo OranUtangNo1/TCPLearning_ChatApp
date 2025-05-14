@@ -1,5 +1,4 @@
-﻿using ChatAppCore.ChatModel.Interface;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace ChatAppCore
 {
@@ -21,12 +20,6 @@ namespace ChatAppCore
             services.AddSingleton<IMessageTransceiver, MessageTransceiver>();
             services.AddSingleton<IMessageParser, MessageParser>();
             services.AddSingleton<ITcpClientService, TcpClientFacade>();
-
-            // メッセージ管理サービスを登録
-            services.AddSingleton<IMessageManager, MessageManager>();
-
-            // チャットモデルを登録
-            services.AddSingleton<IChatModels, ClientChatModels>();
 
             return services;
         }

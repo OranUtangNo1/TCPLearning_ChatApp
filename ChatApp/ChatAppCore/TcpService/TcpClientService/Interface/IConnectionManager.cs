@@ -52,5 +52,10 @@ namespace ChatAppCore
         /// キャンセレーショントークンを取得する
         /// </summary>
         CancellationToken CancellationToken { get; }
+
+        /// <summary>
+        /// steram
+        /// </summary>
+        NetworkStream NetworkStream { get; }
     }
 }

@@ -78,6 +78,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Model\ClientChatModels.cs" />
+    <Compile Include="Model\Interface\IClientChatModels.cs" />
+    <Compile Include="Model\Interface\IMessageManager.cs" />
+    <Compile Include="Model\MessageManager.cs" />
     <Compile Include="ViewModel\IVmlMainWindow.cs" />
     <Compile Include="ViewModel\VmlMainWindow.cs" />
     <Compile Include="ViewModel\base\ViewModelBase.cs" />

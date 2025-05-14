@@ -54,10 +54,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChatModel\ChatModels.cs" />
-    <Compile Include="ChatModel\Interface\IChatModels.cs" />
-    <Compile Include="ChatModel\Interface\IMessageManager.cs" />
-    <Compile Include="ChatModel\MessageManager.cs" />
     <Compile Include="Data\Message.cs" />
     <Compile Include="FrameWork\RelayCommand.cs" />
     <Compile Include="TcpService\TcpClientService\Interface\ITcpClientService.cs" />

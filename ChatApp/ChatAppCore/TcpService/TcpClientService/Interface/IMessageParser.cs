@@ -14,7 +14,7 @@ namespace ChatAppCore
         /// <summary>
         /// メッセージを受信した時に発生するイベント
         /// </summary>
-        event Action<Message> MessageReceived;
+        event Action<string> MessageReceived;
 
         /// <summary>
         /// 受信したバイトデータをメッセージにパースする
