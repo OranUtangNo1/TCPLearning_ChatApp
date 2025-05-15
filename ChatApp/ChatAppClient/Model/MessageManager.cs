@@ -12,7 +12,7 @@ namespace ChatAppClient.Models
         /// <summary>
         /// メッセージリスト
         /// </summary>
-        private List<Message> messages = new List<Message>();
+        private List<ChatMessage> messages = new List<ChatMessage>();
         #endregion
 
         #region Method
@@ -20,7 +20,7 @@ namespace ChatAppClient.Models
         /// メッセージを管理下へ追加
         /// </summary>
         /// <param name="message">メッセージ</param>
-        public void AddMessage(Message message)
+        public void AddMessage(ChatMessage message)
         {
             this.messages.Add(message);
         }

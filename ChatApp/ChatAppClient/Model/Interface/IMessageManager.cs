@@ -11,6 +11,6 @@ namespace ChatAppClient.Models
         /// メッセージを管理下へ追加
         /// </summary>
         /// <param name="message">メッセージ</param>
-        void AddMessage(Message message);
+        void AddMessage(ChatMessage message);
     }
 }

@@ -14,7 +14,12 @@ namespace ChatAppClient.Models
         /// <summary>
         /// メッセージを受信した時に発生するイベント
         /// </summary>
-        event Action<Message> MessageRecieved;
+        event Action<ChatMessage> ChatMessageRecieved;
+
+        /// <summary>
+        /// UserIDを受信した時に発生するイベント
+        /// </summary>
+        event Action<ConnectedMessage> ClientIDConfirmed;
 
         /// <summary>
         /// 接続状態が変更された時に発生するイベント
@@ -28,11 +33,9 @@ namespace ChatAppClient.Models
         /// <summary>
         /// サーバーに接続する
         /// </summary>
-        /// <param name="ip">接続先IPアドレス</param>
-        /// <param name="port">接続先ポート番号</param>
         /// <returns>接続処理のタスク</returns>
         /// <exception cref="InvalidOperationException">接続処理に失敗した場合</exception>
-        Task ConnectAsync(string ip, int port);
+        Task ConnectAsync();
 
         /// <summary>
         /// サーバーとの接続を切断する
@@ -47,7 +50,17 @@ namespace ChatAppClient.Models
         /// <returns>送信処理のタスク</returns>
         /// <exception cref="ArgumentException">メッセージが空または無効な場合</exception>
         /// <exception cref="InvalidOperationException">送信に失敗した場合</exception>
-        Task SendMessageAsync(string message);
+        Task SendChatMessageAsync(string message,int addressID);
+
+
+        /// <summary>
+        /// 希望ユーザー名を送信する
+        /// </summary>
+        /// <param name="message">送信するメッセージ</param>
+        /// <returns>送信処理のタスク</returns>
+        /// <exception cref="ArgumentException">メッセージが空または無効な場合</exception>
+        /// <exception cref="InvalidOperationException">送信に失敗した場合</exception>
+        Task SendPreferUserNameAsync(string preferUserName);
 
         #endregion
     }

@@ -18,10 +18,10 @@
 
         <!-- 接続情報 -->
         <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
-            <TextBlock Text="接続先IP:" VerticalAlignment="Center" />
-            <TextBox Name="txtTargetIP" Text="{Binding TargetIP,UpdateSourceTrigger=PropertyChanged}"  Width="120" Margin="5,0" />
-            <TextBlock Text="ポート:" VerticalAlignment="Center" />
-            <TextBox Name="txtTargetPort" Text="{Binding TargetPort,UpdateSourceTrigger=PropertyChanged}" Width="60" Margin="5,0" />
+            <TextBlock Text="ユーザー名:" VerticalAlignment="Center" />
+            <TextBox Name="txtUserName" Text="{Binding UserName,UpdateSourceTrigger=PropertyChanged}"  Width="120" Margin="5,0" />
+            <TextBlock Text="ID:" VerticalAlignment="Center" />
+            <TextBox Name="txtUserID" Text="{Binding UserID,UpdateSourceTrigger=PropertyChanged}" Width="60" Margin="5,0" />
             <Button Content="接続" Width="60" Margin="5,0" Command="{Binding ConnectCommand}"/>
             <Button Content="切断" Width="60" Margin="5,0" Command="{Binding DisConnectCommand}"/>
             <TextBlock Text="{Binding ConnectionStatus,UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>

@@ -1,6 +1,11 @@
 ﻿using ChatAppCore;
+using ChatAppCore.Data;
+using ChatAppCore.Envelope;
 using System;
+using System.Linq.Expressions;
+using System.Text.Json;
 using System.Threading.Tasks;
+
 
 namespace ChatAppClient.Models
 {
@@ -18,6 +23,8 @@ namespace ChatAppClient.Models
         private readonly IMessageManager _messageManager;
         private bool _disposed = false;
 
+        private int userId = -1;
+
         #endregion
 
         #region Event
@@ -25,7 +32,12 @@ namespace ChatAppClient.Models
         /// <summary>
         /// メッセージを受信した時に発生するイベント
         /// </summary>
-        public event Action<Message> MessageRecieved;
+        public event Action<ChatMessage> ChatMessageRecieved;
+        
+        /// <summary>
+        /// UserIDを受信した時に発生するイベント
+        /// </summary>
+        public event Action<ConnectedMessage> ClientIDConfirmed;
 
         /// <summary>
         /// 接続状態が変更された時に発生するイベント
@@ -49,7 +61,6 @@ namespace ChatAppClient.Models
             _connectionService.ConnectionStatusChanged += OnConnectionStatusChanged;
         }
 
-
         #region Method
 
         /// <summary>
@@ -59,16 +70,16 @@ namespace ChatAppClient.Models
         /// <param name="port">接続先ポート番号</param>
         /// <returns>接続処理のタスク</returns>
         /// <exception cref="InvalidOperationException">接続処理に失敗した場合</exception>
-        public async Task ConnectAsync(string ip, int port)
+        public async Task ConnectAsync()
         {
             ThrowIfDisposed();
 
             try
             {
-                bool result = await _connectionService.ConnectAsync(ip, port);
+                bool result = await _connectionService.ConnectAsync();
                 if (!result)
                 {
-                    throw new InvalidOperationException($"Failed to connect to {ip}:{port}");
+                    throw new InvalidOperationException($"Failed to connect");
                 }
             }
             catch (Exception ex)
@@ -105,7 +116,7 @@ namespace ChatAppClient.Models
         /// <returns>送信処理のタスク</returns>
         /// <exception cref="ArgumentException">メッセージが空または無効な場合</exception>
         /// <exception cref="InvalidOperationException">送信に失敗した場合</exception>
-        public async Task SendMessageAsync(string message)
+        public async Task SendChatMessageAsync(string message, int addressID)
         {
             ThrowIfDisposed();
 
@@ -116,7 +127,11 @@ namespace ChatAppClient.Models
 
             try
             {
-                await _connectionService.SendAsync(message);
+                // Envelope作成　→　Jsonシリアライズする
+                var envelope = EnvelopeCreator.ChatMessageEnvelopeCreate(message, userId.ToString(), addressID.ToString());
+                string json = JsonSerializer.Serialize(envelope);
+                
+                await _connectionService.SendAsync(json);
             }
             catch (Exception ex)
             {
@@ -125,10 +140,41 @@ namespace ChatAppClient.Models
         }
 
         /// <summary>
+        /// 希望ユーザー名を送信する
+        /// </summary>
+        /// <param name="message">送信するメッセージ</param>
+        /// <returns>送信処理のタスク</returns>
+        /// <exception cref="ArgumentException">メッセージが空または無効な場合</exception>
+        /// <exception cref="InvalidOperationException">送信に失敗した場合</exception>
+        public async Task SendPreferUserNameAsync(string preferUserName)
+        {
+            ThrowIfDisposed();
+
+            if (string.IsNullOrEmpty(preferUserName))
+            {
+                throw new ArgumentException("UserName cannot be null or empty", nameof(preferUserName));
+            }
+
+            try
+            {
+                // Envelope作成　→　Jsonシリアライズする
+                var envelope = EnvelopeCreator.ConnectMessageEnvelopeCreate(preferUserName, "0000", "9999");
+                string json = JsonSerializer.Serialize(envelope);
+
+                await _connectionService.SendAsync(json);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Failed to send message: {ex.Message}", ex);
+            }
+        }
+
+
+        /// <summary>
         /// メッセージ受信時の処理
         /// </summary>
         /// <param name="newMessage">受信したメッセージ</param>
-        private void OnMessageRecived(Message newMessage)
+        private void OnMessageRecived(string newMessage)
         {
             if (newMessage == null)
             {
@@ -137,11 +183,9 @@ namespace ChatAppClient.Models
 
             try
             {
-                // メッセージをマネージャに追加
-                _messageManager.AddMessage(newMessage);
-
-                // イベントを発火
-                MessageRecieved?.Invoke(newMessage);
+                // Envelopeにデシリアライズ
+                var envelope = JsonSerializer.Deserialize<MessageEnvelope>(newMessage);
+                
             }
             catch (Exception ex)
             {
@@ -200,6 +244,28 @@ namespace ChatAppClient.Models
                 }
 
                 _disposed = true;
+            }
+        }
+
+        private void OpenEnvelope(MessageEnvelope messageEnvelope) 
+        {
+            switch (messageEnvelope.MessageType) 
+            {
+                case MessageType.Connected:
+                    var connectedMessage = messageEnvelope.Data as ConnectedMessage;
+                    // イベントを発火
+                    ClientIDConfirmed?.Invoke(connectedMessage);
+                    break;
+
+                case MessageType.ChatMessage:
+                    var chatMessage = messageEnvelope.Data as ChatMessage;
+                    // イベントを発火
+                    ChatMessageRecieved?.Invoke(chatMessage);
+                    break;
+
+                    default : 
+                    //
+                    break;
             }
         }
 

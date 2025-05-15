@@ -26,5 +26,15 @@ namespace ChatAppCore
         /// メッセージの終端文字列
         /// </summary>
         public string MessageDelimiter { get; set; } = "\r\n";
+
+        /// <summary>
+        /// 接続サーバーのIPアドレス
+        /// </summary>
+        public string ServerIP { get; set; } = "127.0.0.1";
+
+        /// <summary>
+        /// 接続サーバーのPort番号
+        /// </summary>
+        public int ServerPort { get; set; } = 4000;
     }
 }

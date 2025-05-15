@@ -8,6 +8,7 @@ namespace ChatAppCore
     /// </summary>
     public class TcpClientFacade : ITcpClientService
     {
+        private readonly TcpClientSettings _settings;
         private readonly IConnectionManager _connectionManager;
         private readonly IMessageTransceiver _messageTransceiver;
         private readonly IMessageParser _messageParser;
@@ -15,7 +16,7 @@ namespace ChatAppCore
         /// <summary>
         /// メッセージを受信した時に発生するイベント
         /// </summary>
-        public event Action<Message> MessageRecived;
+        public event Action<string> MessageRecived;
 
         /// <summary>
         /// 接続状態が変更された時に発生するイベント
@@ -38,7 +39,7 @@ namespace ChatAppCore
         /// <param name="settings">TCP/IPクライアントの設定</param>
         public TcpClientFacade(TcpClientSettings settings = null)
         {
-            settings  = settings == null ?  new TcpClientSettings() : settings;
+            _settings = settings == null ?  new TcpClientSettings() : settings;
 
             _connectionManager = new ConnectionManager(settings);
             _messageTransceiver = new MessageTransceiver(_connectionManager, settings);
@@ -56,9 +57,9 @@ namespace ChatAppCore
         /// <param name="ip">接続先IPアドレス</param>
         /// <param name="port">接続先ポート番号</param>
         /// <returns>接続に成功した場合はtrue、それ以外はfalse</returns>
-        public async Task<bool> ConnectAsync(string ip, int port)
+        public async Task<bool> ConnectAsync()
         {
-            bool result = await _connectionManager.ConnectAsync(ip, port);
+            bool result = await _connectionManager.ConnectAsync(_settings.ServerIP, _settings.ServerPort);
             if (result)
             {
                 try
@@ -116,8 +117,7 @@ namespace ChatAppCore
         /// <param name="message">受信したメッセージ</param>
         private void OnMessageReceived(string rowMessage)
         {
-            var message = new Message(rowMessage, this.ConnectionIP, this.ConnectionPort, DateTime.Now) { };
-            MessageRecived?.Invoke(message);
+            MessageRecived?.Invoke(rowMessage);
         }
 
         /// <summary>

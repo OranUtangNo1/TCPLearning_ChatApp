@@ -7,13 +7,13 @@ namespace ChatAppCore
     public interface ITcpClientService
     {
         // 受信イベント
-        event Action<Message> MessageRecived;
+        event Action<string> MessageRecived;
 
         //　接続状態変更イベント
         event Action<bool> ConnectionStatusChanged;
 
         // 接続開始処理
-        Task<bool> ConnectAsync(string ip, int port);
+        Task<bool> ConnectAsync();
 
         // 切断処理
         void DisConnect();

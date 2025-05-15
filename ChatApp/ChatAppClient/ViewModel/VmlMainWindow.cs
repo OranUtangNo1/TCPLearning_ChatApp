@@ -7,6 +7,12 @@ using ChatAppCore.FrameWork;
 
 namespace ChatAppClient.ViewModel
 {
+
+    internal class ClientInfo 
+    {
+        public string UserName {  get; set; }
+        public string UserID {  get; set; }
+    }
     /// <summary>
     /// クライアント用チャット画面ViewModel
     /// </summary>
@@ -38,12 +44,28 @@ namespace ChatAppClient.ViewModel
         /// <summary>listBox messages</summary>
         private ObservableCollection<string> _messages = new ObservableCollection<string>();
 
+        /// <summary>UserID</summary>
+        private string _userID = String.Empty;
+
+        /// <summary>UserName</summary>
+        private string _userName = String.Empty;
+
+
+        /// <summary></summary>
+        private ObservableCollection<ClientInfo> _connectedClientList = new ObservableCollection<ClientInfo>();
+
+        /// <summary></summary>
+        private ClientInfo targetClient = new ClientInfo() { UserName = "テスト君", UserID = "999" };
+
+
         /// <summary>chat Func</summary>
         private IClientChatModels chatModel = null;
 
         #endregion
 
         #region  View Propertys
+
+
 
         /// <summary>IPAddres TxtB</summary>
         public string TargetIP 
@@ -73,11 +95,23 @@ namespace ChatAppClient.ViewModel
             set => this.SetProperty(ref this._inputText, value);
         }
 
-        /// <summary>Message List</summary>
+        /// <summary>ChatMessage List</summary>
         public ObservableCollection<string> Messages 
         {
             get => _messages;
             set => this.SetProperty(ref this._messages, value);
+        }
+
+        public string UserID 
+        {
+            get => _userID;
+            set => this.SetProperty(ref _userID, value);
+        }
+
+        public string UserName
+        {
+            get => _userName;
+            set => this.SetProperty(ref _userName, value);
         }
 
         #endregion
@@ -103,7 +137,7 @@ namespace ChatAppClient.ViewModel
             this.InitialSetting();
 
             // ======= コマンド登録  =====================
-            this.ConnectCommand = new RelayCommand(Connect);
+            this.ConnectCommand = new RelayCommand(Connect, ConnectCanExecute);
             this.DisConnectCommand = new RelayCommand(DisConnect);
             this.SendCommand = new RelayCommand(Send);
 
@@ -112,7 +146,9 @@ namespace ChatAppClient.ViewModel
 
             // ======= イベントハンドラ登録  =====================
             // メッセージ受信
-            this.chatModel.MessageRecieved += msg => this.OnMessageRecieved(msg);
+            this.chatModel.ChatMessageRecieved += msg => this.OnMessageRecieved(msg);
+            // UserID受信
+            this.chatModel.ClientIDConfirmed += msg => UserID = msg.ClientID;
 
             // 接続状態変更
             this.chatModel.ConnectionStatusChanged += status => this.OnConnectionStatusChanged(status);
@@ -124,12 +160,20 @@ namespace ChatAppClient.ViewModel
         #region Comand Method
 
         /// <summary>Connect</summary>
+        private bool ConnectCanExecute()
+        {
+            return !String.IsNullOrEmpty(this.UserName);
+        }
+
+        /// <summary>Connect</summary>
         private void Connect()
         {
             try 
             {
                 // 接続
-                this.chatModel.ConnectAsync(this.TargetIP, int.Parse(this.TargetPort));
+                this.chatModel.ConnectAsync();
+                // UserName通知
+                this.chatModel.SendPreferUserNameAsync(this.UserName);
             }
             catch (InvalidOperationException ex)
             {
@@ -148,7 +192,7 @@ namespace ChatAppClient.ViewModel
         {
             try 
             {
-                this.chatModel.SendMessageAsync(this.InputText);
+                this.chatModel.SendChatMessageAsync(this.InputText, int.Parse(targetClient.UserID));
                 this.AddMessageToList($"{DateTime.Now} : 送-->  {this.InputText}");
 
                 this.InputText = string.Empty;
@@ -197,11 +241,11 @@ namespace ChatAppClient.ViewModel
         /// メッセージ受信時処理
         /// </summary>
         /// <param name="msg">受信メッセージ</param>
-        private void OnMessageRecieved(Message msg) 
+        private void OnMessageRecieved(ChatMessage msg) 
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                var dispMessage = $"{msg.Timestamp} : -->受  {msg.Content}";
+                var dispMessage = $"[{msg.From} --> {msg.To}] : {msg.Content}";
                 this.Messages.Add(dispMessage);
             });
         }

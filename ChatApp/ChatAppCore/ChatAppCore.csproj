@@ -54,7 +54,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Message.cs" />
+    <Compile Include="Data\ChatMessage.cs" />
+    <Compile Include="Data\MessageEnvelope.cs" />
+    <Compile Include="Envelope\EnvelopeCreator.cs" />
     <Compile Include="FrameWork\RelayCommand.cs" />
     <Compile Include="TcpService\TcpClientService\Interface\ITcpClientService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -71,5 +73,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
