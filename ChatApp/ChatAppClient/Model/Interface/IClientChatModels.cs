@@ -26,6 +26,11 @@ namespace ChatAppClient.Models
         /// </summary>
         event Action<bool> ConnectionStatusChanged;
 
+        /// <summary>
+        /// 接続失敗時に発生するイベント
+        /// </summary>
+        event Action<string> ConnectFailed;
+
         #endregion
 
         #region Method

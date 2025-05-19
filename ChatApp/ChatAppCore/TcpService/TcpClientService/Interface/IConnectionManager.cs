@@ -26,6 +26,11 @@ namespace ChatAppCore
         event Action<bool, string> ConnectionStatusChanged;
 
         /// <summary>
+        /// 接続失敗時に発生するイベント
+        /// </summary>
+        event Action<string> ConnectFailed;
+
+        /// <summary>
         /// 非同期に接続を試みる
         /// </summary>
         /// <param name="ip">接続先IPアドレス</param>

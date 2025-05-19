@@ -24,6 +24,11 @@ namespace ChatAppCore
         public event Action<bool> ConnectionStatusChanged;
 
         /// <summary>
+        /// 接続失敗時に発生するイベント
+        /// </summary>
+        public event Action<string> ConnectFailed;
+
+        /// <summary>
         /// 接続先のIPアドレス
         /// </summary>
         public string ConnectionIP => _connectionManager.ConnectionIP;
@@ -47,6 +52,10 @@ namespace ChatAppCore
 
             // イベントの接続
             _connectionManager.ConnectionStatusChanged += OnConnectionStatusChanged;
+            // イベントの接続
+            _connectionManager.ConnectFailed += OnConnectFailed;
+
+
             _messageTransceiver.DataReceived += OnDataReceived;
             _messageParser.MessageReceived += OnMessageReceived;
         }
@@ -129,5 +138,16 @@ namespace ChatAppCore
         {
             ConnectionStatusChanged?.Invoke(isConnected);
         }
+
+        /// <summary>
+        /// 接続状態変更時の処理
+        /// </summary>
+        /// <param name="isConnected">接続状態</param>
+        /// <param name="message">ステータスメッセージ</param>
+        private void OnConnectFailed(string message)
+        {
+            ConnectFailed?.Invoke(message);
+        }
+
     }
 }

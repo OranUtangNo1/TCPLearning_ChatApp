@@ -2,16 +2,17 @@
 
 namespace ChatAppCore
 {
-    public interface IMessage 
-    {
-        /// <summary></summary>
-        string To { get;}
+    //public interface IMessage 
+    //{
+    //    /// <summary></summary>
+    //    string To { get;}
 
-        /// <summary></summary>
-        string From { get; }
-    }
+    //    /// <summary></summary>
+    //    string From { get; }
+    //}
 
-    public class ChatMessage: IMessage
+    //public class ChatMessage: IMessage
+    public class ChatMessage
     {
         /// <summary>Content</summary>
         public string Content { get; set; }
@@ -24,7 +25,8 @@ namespace ChatAppCore
 
     }
 
-    public class ConnectMessage : IMessage
+    //public class ConnectMessage : IMessage
+    public class ConnectMessage
     {
         /// <summary>UserName</summary>
         public string PreferUserName { get; set; }
@@ -36,7 +38,8 @@ namespace ChatAppCore
         public string From { get; set; }
     }
 
-    public class ConnectedMessage : IMessage
+    //public class ConnectedMessage : IMessage
+    public class ConnectedMessage
     {
         /// <summary>割り当てられたClientID</summary>
         public string ClientID { get; set; }

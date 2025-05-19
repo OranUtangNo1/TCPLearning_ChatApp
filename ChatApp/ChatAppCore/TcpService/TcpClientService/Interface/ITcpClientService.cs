@@ -12,6 +12,11 @@ namespace ChatAppCore
         //　接続状態変更イベント
         event Action<bool> ConnectionStatusChanged;
 
+        /// <summary>
+        /// 接続失敗時に発生するイベント
+        /// </summary>
+        event Action<string> ConnectFailed;
+
         // 接続開始処理
         Task<bool> ConnectAsync();
 

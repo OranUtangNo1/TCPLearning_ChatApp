@@ -46,6 +46,11 @@ namespace ChatAppCore
         public event Action<bool, string> ConnectionStatusChanged;
 
         /// <summary>
+        /// 接続失敗時に発生するイベント
+        /// </summary>
+        public event Action<string> ConnectFailed;
+
+        /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="settings">TCP/IPクライアントの設定</param>
@@ -68,7 +73,7 @@ namespace ChatAppCore
                 // すでに接続中の場合は何もしない
                 if (IsConnected)
                 {
-                    ConnectionStatusChanged?.Invoke(true, "Already connected");
+                    ConnectFailed?.Invoke("Already connected");
                     return true;
                 }
 
@@ -92,7 +97,7 @@ namespace ChatAppCore
                 if (completedTask == timeoutTask)
                 {
                     DisposeTcpClient();
-                    ConnectionStatusChanged?.Invoke(false, "Connection timed out");
+                    ConnectFailed?.Invoke("Connection timed out");
                     return false;
                 }
 
@@ -100,7 +105,7 @@ namespace ChatAppCore
                 if (_client == null || !_client.Connected)
                 {
                     DisposeTcpClient();
-                    ConnectionStatusChanged?.Invoke(false, "Connection failed");
+                    ConnectFailed?.Invoke("Connection failed");
                     return false;
                 }
 
@@ -127,13 +132,13 @@ namespace ChatAppCore
             catch (SocketException ex)
             {
                 DisposeTcpClient();
-                ConnectionStatusChanged?.Invoke(false, $"Socket error: {ex.Message}");
+                ConnectFailed?.Invoke($"Socket error: {ex.Message}");
                 return false;
             }
             catch (Exception ex)
             {
                 DisposeTcpClient();
-                ConnectionStatusChanged?.Invoke(false, $"Unexpected error: {ex.Message}");
+                ConnectFailed?.Invoke($"Unexpected error: {ex.Message}");
                 return false;
             }
         }

@@ -44,6 +44,11 @@ namespace ChatAppClient.Models
         /// </summary>
         public event Action<bool> ConnectionStatusChanged;
 
+        /// <summary>
+        /// 接続失敗時に発生するイベント
+        /// </summary>
+        public event Action<string> ConnectFailed;
+
         #endregion
 
         /// <summary>
@@ -59,6 +64,7 @@ namespace ChatAppClient.Models
             // イベントハンドラの登録
             _connectionService.MessageRecived += OnMessageRecived;
             _connectionService.ConnectionStatusChanged += OnConnectionStatusChanged;
+            _connectionService.ConnectFailed += OnConnectFailed;
         }
 
         #region Method
@@ -210,6 +216,24 @@ namespace ChatAppClient.Models
                 System.Diagnostics.Debug.WriteLine($"Connection status handler error: {ex.Message}");
             }
         }
+
+        /// <summary>
+        /// 接続状態変更時の処理
+        /// </summary>
+        /// <param name="status">接続状態</param>
+        private void OnConnectFailed(string message)
+        {
+            try
+            {
+                ConnectFailed?.Invoke(message);
+            }
+            catch (Exception ex)
+            {
+                // イベントハンドラエラーはログに記録
+                System.Diagnostics.Debug.WriteLine($"Connection status handler error: {ex.Message}");
+            }
+        }
+
 
         /// <summary>
         /// オブジェクトが破棄されている場合に例外をスローする

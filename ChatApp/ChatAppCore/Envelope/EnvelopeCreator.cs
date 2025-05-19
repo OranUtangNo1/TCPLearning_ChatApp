@@ -32,7 +32,7 @@ namespace ChatAppCore.Envelope
         }
 
 
-        private static IMessage EnvelopeCreate(MessageType messageType,params string[] strings) 
+        private static Object EnvelopeCreate(MessageType messageType,params string[] strings) 
         {
             switch (messageType) 
             {

@@ -69,10 +69,13 @@
     <Compile Include="TcpService\TcpClientService\MessageTransceiver.cs" />
     <Compile Include="TcpService\TcpClientService\TcpClientFacade.cs" />
     <Compile Include="TcpService\TcpClientService\Setting\TcpClientSettings.cs" />
+    <Compile Include="TcpService\TcpListenerService\Setting\TcpListenerSetting.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="TcpService\TcpListenerService\Intereface\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

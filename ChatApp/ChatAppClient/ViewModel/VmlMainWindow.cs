@@ -152,6 +152,8 @@ namespace ChatAppClient.ViewModel
 
             // 接続状態変更
             this.chatModel.ConnectionStatusChanged += status => this.OnConnectionStatusChanged(status);
+            // 接続失敗
+            this.chatModel.ConnectFailed += msg => this.OnConnectFailed(msg);
 
         }
 
@@ -259,6 +261,15 @@ namespace ChatAppClient.ViewModel
             this.ConnectionStatus = status ? StatusConnect : StatusDisConnect;
 
             this.MessageAddOnStateChanged(status);
+        }
+
+        /// <summary>
+        /// 接続状態変更時処理
+        /// </summary>
+        /// <param name="status">変更後状態</param>
+        private void OnConnectFailed(string msg) 
+        {
+            this.AddMessageToList($"【Error】 {DateTime.Now} : {msg}");
         }
 
         /// <summary>
