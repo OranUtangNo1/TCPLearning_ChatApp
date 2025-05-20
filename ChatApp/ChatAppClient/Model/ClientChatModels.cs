@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 
+
 namespace ChatAppClient.Models
 {
     /// <summary>
@@ -164,7 +165,7 @@ namespace ChatAppClient.Models
             try
             {
                 // Envelope作成　→　Jsonシリアライズする
-                var envelope = EnvelopeCreator.ConnectMessageEnvelopeCreate(preferUserName, "0000", "9999");
+                var envelope = EnvelopeCreator.ConnectMessageEnvelopeCreate(preferUserName, "999", "000");
                 string json = JsonSerializer.Serialize(envelope);
 
                 await _connectionService.SendAsync(json);

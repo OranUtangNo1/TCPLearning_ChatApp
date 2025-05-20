@@ -16,6 +16,9 @@ namespace ChatAppCore.Data
 
     public class MessageEnvelope
     {
+        public string SenderID { get; set; }
+        public string AddressID { get; set; }
+
         public MessageType MessageType { get; set; }
         public Object Data { get; set; }
     }

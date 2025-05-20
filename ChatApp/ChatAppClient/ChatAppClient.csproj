@@ -145,6 +145,10 @@
       <Project>{5341a139-9457-4b21-bac8-6c4486a5e923}</Project>
       <Name>ChatAppCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Const\Const.csproj">
+      <Project>{70d9d04c-fb26-43eb-a1d6-8a52120078fd}</Project>
+      <Name>Const</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

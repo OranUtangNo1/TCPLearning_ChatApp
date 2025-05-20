@@ -17,8 +17,8 @@ namespace ChatAppServer
 
         int _nextID = 0;
 
-        //public string RegisterClient(ClientHandler clientHandler, string userName)
-        public string RegisterClient(ClientHandler clientHandler)
+        //public string RegistClient(ClientHandler clientHandler, string userName)
+        public string RegistClient(ClientHandler clientHandler)
         {
             string assignmentId = _nextID.ToString();
 

@@ -8,7 +8,6 @@ namespace ChatAppCore.TcpService.TcpListenerService.Setting
 {
     internal class TcpListenerSetting
     {
-
         /// <summary>
         /// 接続サーバーのIPアドレス
         /// </summary>
@@ -18,7 +17,5 @@ namespace ChatAppCore.TcpService.TcpListenerService.Setting
         /// 接続サーバーのポート番号
         /// </summary>
         public int Port { get;} = 4000;
-
-
     }
 }

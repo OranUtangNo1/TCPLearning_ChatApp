@@ -11,10 +11,12 @@ namespace ChatAppCore.Envelope
     {
         public static MessageEnvelope ChatMessageEnvelopeCreate(string content,string senderID,string addressID) 
         {
-            var data = EnvelopeCreate(MessageType.ChatMessage, content, senderID, addressID);
+            var data = EnvelopeDataCreate(MessageType.ChatMessage, content);
             var envelope = new MessageEnvelope()
             {
                 MessageType = MessageType.ChatMessage,
+                SenderID = senderID,
+                AddressID = addressID,
                 Data = data
             };
             return envelope;
@@ -22,38 +24,57 @@ namespace ChatAppCore.Envelope
 
         public static MessageEnvelope ConnectMessageEnvelopeCreate(string preferUserName, string senderID, string addressID)
         {
-            var data = EnvelopeCreate(MessageType.Connect, preferUserName, senderID, addressID);
+            var data = EnvelopeDataCreate(MessageType.Connect, preferUserName);
             var envelope = new MessageEnvelope()
             {
                 MessageType = MessageType.Connect,
+                SenderID = senderID,
+                AddressID = addressID,
                 Data = data
             };
             return envelope;
         }
 
+        public static MessageEnvelope ConnectedMessageEnvelopeCreate(string assignedID, string senderID, string addressID)
+        {
+            var data = EnvelopeDataCreate(MessageType.Connected, assignedID);
+            var envelope = new MessageEnvelope()
+            {
+                MessageType = MessageType.Connect,
+                SenderID = senderID,
+                AddressID = addressID,
+                Data = data
+            };
+            return envelope;
+        }
 
-        private static Object EnvelopeCreate(MessageType messageType,params string[] strings) 
+        private static Object EnvelopeDataCreate(MessageType messageType,params string[] strings) 
         {
             switch (messageType) 
             {
                 case MessageType.ChatMessage:
-                    if (strings.Length != 3) throw new ArgumentException("falid Number of parameters");
+                    if (strings.Length != 1) throw new ArgumentException("falid Number of parameters");
                     var chatMessage = new ChatMessage()
                     {
-                        Content = strings[0],
-                        To = strings[1],
-                        From = strings[2],
+                        Message = strings[0],
                     };
                     return chatMessage;
+
                 case MessageType.Connect:
-                    if (strings.Length != 3) throw new ArgumentException("falid Number of parameters");
+                    if (strings.Length != 1) throw new ArgumentException("falid Number of parameters");
                     var connectMessage = new ConnectMessage()
                     {
                         PreferUserName = strings[0],
-                        To = strings[1],
-                        From = strings[2],
                     };
                     return connectMessage;
+
+                case MessageType.Connected:
+                    if (strings.Length != 1) throw new ArgumentException("falid Number of parameters");
+                    var connectedMessage = new ConnectedMessage()
+                    {
+                        AssignedID = strings[0],
+                    };
+                    return connectedMessage;
 
                 default: throw new ArgumentException("falid MessageType");
             }
