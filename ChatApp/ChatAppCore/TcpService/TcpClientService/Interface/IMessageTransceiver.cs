@@ -12,7 +12,7 @@ namespace ChatAppCore
     public interface IMessageTransceiver : IDisposable
     {
         /// <summary>
-        /// メッセージを受信した時に発生するイベント
+        /// メッセージ受信イベント
         /// </summary>
         event Action<byte[]> DataReceived;
 

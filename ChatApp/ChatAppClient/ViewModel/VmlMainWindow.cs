@@ -30,7 +30,7 @@ namespace ChatAppClient.ViewModel
         #region  Private Filed
 
         /// <summary>ip</summary>
-        private string _targetIp;
+        private string _targetUser;
 
         /// <summary>port</summary>
         private string _targetPort;
@@ -67,18 +67,11 @@ namespace ChatAppClient.ViewModel
 
 
 
-        /// <summary>IPAddres TxtB</summary>
-        public string TargetIP 
+        /// <summary>TargetUser</summary>
+        public string TargetUser 
         {
-            get => _targetIp;
-            set => this.SetProperty(ref this._targetIp, value);
-        }
-
-        /// <summary>Post TxtB</summary>
-        public string TargetPort
-        {
-            get => _targetPort;
-            set => this.SetProperty(ref this._targetPort, value);
+            get => _targetUser;
+            set => this.SetProperty(ref this._targetUser, value);
         }
 
         /// <summary>Status Lbl</summary>
@@ -146,9 +139,9 @@ namespace ChatAppClient.ViewModel
 
             // ======= イベントハンドラ登録  =====================
             // メッセージ受信
-            this.chatModel.ChatMessageRecieved += msg => this.OnMessageRecieved(msg);
+            this.chatModel.ChatMessageRecieved += msg => this.OnMessageRecieved(msg.Item1,msg.Item2);
             // UserID受信
-            this.chatModel.ClientIDConfirmed += msg => UserID = msg.ClientID;
+            this.chatModel.ClientIDConfirmed += msg => UserID = msg.AssignedID;
 
             // 接続状態変更
             this.chatModel.ConnectionStatusChanged += status => this.OnConnectionStatusChanged(status);
@@ -172,6 +165,8 @@ namespace ChatAppClient.ViewModel
         {
             try 
             {
+                if (this.ConnectionStatus == "接続中") return;
+
                 // 接続
                 this.chatModel.ConnectAsync();
                 // UserName通知
@@ -219,8 +214,8 @@ namespace ChatAppClient.ViewModel
         private void InitialSetting()
         {
             // -----初期値設定------
-            this.TargetIP = "127.0.0.1";
-            this.TargetPort = "5000";
+            //this.TargetUser = "127.0.0.1";
+
             this.ConnectionStatus = StatusDisConnect;
         }
 
@@ -243,11 +238,11 @@ namespace ChatAppClient.ViewModel
         /// メッセージ受信時処理
         /// </summary>
         /// <param name="msg">受信メッセージ</param>
-        private void OnMessageRecieved(ChatMessage msg) 
+        private void OnMessageRecieved(string sender, ChatMessage msg) 
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                var dispMessage = $"[{msg.From} --> {msg.To}] : {msg.Content}";
+                var dispMessage = $"[{sender} --> {this.UserID}] : {msg.Message}";
                 this.Messages.Add(dispMessage);
             });
         }

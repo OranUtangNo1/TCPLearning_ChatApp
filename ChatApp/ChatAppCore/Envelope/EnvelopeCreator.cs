@@ -40,7 +40,7 @@ namespace ChatAppCore.Envelope
             var data = EnvelopeDataCreate(MessageType.Connected, assignedID);
             var envelope = new MessageEnvelope()
             {
-                MessageType = MessageType.Connect,
+                MessageType = MessageType.Connected,
                 SenderID = senderID,
                 AddressID = addressID,
                 Data = data

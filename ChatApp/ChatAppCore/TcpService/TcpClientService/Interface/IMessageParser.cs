@@ -12,7 +12,7 @@ namespace ChatAppCore
     public interface IMessageParser
     {
         /// <summary>
-        /// メッセージを受信した時に発生するイベント
+        /// メッセージ受信イベント
         /// </summary>
         event Action<string> MessageReceived;
 

@@ -1,6 +1,7 @@
 ﻿using ChatAppCore;
 using ChatAppCore.Data;
 using ChatAppCore.Envelope;
+using ChatAppServer;
 using System;
 using System.Linq.Expressions;
 using System.Text.Json;
@@ -31,9 +32,9 @@ namespace ChatAppClient.Models
         #region Event
 
         /// <summary>
-        /// メッセージを受信した時に発生するイベント
+        /// メッセージ受信イベント
         /// </summary>
-        public event Action<ChatMessage> ChatMessageRecieved;
+        public event Action<(string, ChatMessage)> ChatMessageRecieved;
         
         /// <summary>
         /// UserIDを受信した時に発生するイベント
@@ -190,9 +191,10 @@ namespace ChatAppClient.Models
 
             try
             {
-                // Envelopeにデシリアライズ
-                var envelope = JsonSerializer.Deserialize<MessageEnvelope>(newMessage);
                 
+                // Envelopeにデシリアライズ
+                var envelope = EnvelopeSerializer.Deserialize(newMessage);
+                this.OpenEnvelope(envelope);
             }
             catch (Exception ex)
             {
@@ -284,12 +286,13 @@ namespace ChatAppClient.Models
 
                 case MessageType.ChatMessage:
                     var chatMessage = messageEnvelope.Data as ChatMessage;
+                    var sender = messageEnvelope.SenderID;
                     // イベントを発火
-                    ChatMessageRecieved?.Invoke(chatMessage);
+                    ChatMessageRecieved?.Invoke((sender,chatMessage));
                     break;
 
                     default : 
-                    //
+
                     break;
             }
         }

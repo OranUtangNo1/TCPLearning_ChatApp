@@ -15,7 +15,7 @@ namespace ChatAppCore
         private NetworkStream _stream => _connectionManager.NetworkStream;
 
         /// <summary>
-        /// メッセージを受信した時に発生するイベント
+        /// メッセージ受信イベント
         /// </summary>
         public event Action<byte[]> DataReceived;
 

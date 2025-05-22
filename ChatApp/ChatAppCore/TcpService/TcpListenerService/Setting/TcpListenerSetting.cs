@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatAppCore.TcpService.TcpListenerService.Setting
+namespace ChatAppCore
 {
-    internal class TcpListenerSetting
+    public class TcpListenerSetting
     {
         /// <summary>
         /// 接続サーバーのIPアドレス

@@ -1,27 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ChatAppServer
 {
-    internal class ClientHandler : IDisposable
+    public class ClientHandler : IDisposable
     {
-        private string _clientID;
-        private string userName ;
-
         private TcpClient tcpClient;
-
         NetworkStream netWorkStream;
-        StreamReader streamReader;
         StreamWriter streamWriter;
 
         // dispose filed
         private bool disposed = false;
+        private bool isDisConnected = false;
 
-        public ClientHandler(TcpClient client) 
+        /// <summary>
+        /// メッセージ受信イベント
+        /// </summary>
+        public event Action<string> MessageRecived;
+
+        /// <summary>
+        /// クライアント切断検知イベント
+        /// </summary>
+        public event Action<string> ClientDisConnected;
+
+        public ClientHandler(TcpClient client)
         {
             this.tcpClient = client;
 
@@ -29,10 +32,16 @@ namespace ChatAppServer
 
         public void Start()
         {
-            try 
+            Task.Run(() => RecieveLoop());
+        }
+
+        private void RecieveLoop()
+        {
+            try
             {
                 using (tcpClient)
                 using (this.netWorkStream = tcpClient.GetStream())
+                using (this.streamWriter = new StreamWriter(this.netWorkStream, Encoding.UTF8))
                 {
                     while (true)
                     {
@@ -40,28 +49,38 @@ namespace ChatAppServer
                         int bytesRead = netWorkStream.Read(buffer, 0, buffer.Length);
                         if (bytesRead > 0)
                         {
-
                             var jsonString = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                             // メッセージ受信イベント発火
-
+                            this.MessageRecived?.Invoke(jsonString);
                         }
                         else
                         {
                             // クライアント切断検知イベント発火
+                            this.OnClientDisConnected();
+                            break;
                         }
                     }
                 }
             }
-            catch 
+            // IO関係の例外
+            catch (IOException)
             {
-                // dispose する
-
                 // Error発生例外スロー
-
+                this.OnClientDisConnected();
+            }
+            //その他の例外
+            catch (Exception ex)
+            {
+                // Error発生例外スロー
+                this.OnClientDisConnected();
+            }
+            finally
+            {
+                this.Dispose();
             }
         }
 
-        public void SendMessage(string jsonMessage) 
+        public void SendMessage(string jsonMessage)
         {
             try
             {
@@ -70,9 +89,17 @@ namespace ChatAppServer
             catch
             {
                 //dispose
-                this.Dispose(true);
+                this.Dispose();
                 // Error発生例外スロー
             }
+        }
+
+        private void OnClientDisConnected() 
+        {
+            if (isDisConnected) return;
+
+            isDisConnected = true;
+            this.ClientDisConnected?.Invoke("000");
         }
 
         public void Dispose()
@@ -81,7 +108,7 @@ namespace ChatAppServer
             GC.SuppressFinalize(this);
         }
 
-        private void Dispose(bool disposing) 
+        private void Dispose(bool disposing)
         {
             // ガード節
             if (disposed)
@@ -90,9 +117,8 @@ namespace ChatAppServer
             }
 
             // マネージドリソース 明示的に呼び出された場合はマネージドリソースも破棄
-            if (disposing) 
+            if (disposing)
             {
-                this.streamReader?.Dispose();
                 this.streamWriter?.Dispose();
                 this.netWorkStream?.Dispose();
                 this.tcpClient?.Close();
@@ -104,7 +130,7 @@ namespace ChatAppServer
         }
 
         // デストラクタ
-        ~ClientHandler() 
+        ~ClientHandler()
         {
             this.Dispose(false);
         }

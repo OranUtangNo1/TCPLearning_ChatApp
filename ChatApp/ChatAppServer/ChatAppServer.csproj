@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Const\Const.csproj" />
+    <ProjectReference Include="..\ChatAppCore\ChatAppCore.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,9 +12,9 @@ namespace ChatAppClient.Models
         #region Event
 
         /// <summary>
-        /// メッセージを受信した時に発生するイベント
+        /// メッセージ受信イベント
         /// </summary>
-        event Action<ChatMessage> ChatMessageRecieved;
+        event Action<(string, ChatMessage)> ChatMessageRecieved;
 
         /// <summary>
         /// UserIDを受信した時に発生するイベント

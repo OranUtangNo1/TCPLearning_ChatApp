@@ -12,7 +12,7 @@ namespace ChatAppCore
         private readonly StringBuilder _buffer = new StringBuilder();
 
         /// <summary>
-        /// メッセージを受信した時に発生するイベント
+        /// メッセージ受信イベント
         /// </summary>
         public event Action<string> MessageReceived;
 
