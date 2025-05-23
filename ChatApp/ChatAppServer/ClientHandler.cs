@@ -41,7 +41,6 @@ namespace ChatAppServer
             {
                 using (tcpClient)
                 using (this.netWorkStream = tcpClient.GetStream())
-                using (this.streamWriter = new StreamWriter(this.netWorkStream, Encoding.UTF8))
                 {
                     while (true)
                     {
